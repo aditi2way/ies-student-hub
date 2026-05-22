@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'attendance_screen.dart';
+import 'result_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String computerCode;
@@ -95,14 +97,28 @@ class HomeScreen extends StatelessWidget {
                   title: 'Attendance',
                   subtitle: 'View your attendance',
                   color: Colors.blue[700]!,
-                  onTap: () {},
+                  onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AttendanceScreen(),
+    ),
+  );
+},
                 ),
                 menuCard(
                   icon: Icons.grade,
                   title: 'Results',
                   subtitle: 'Check your marks',
                   color: Colors.green[700]!,
-                  onTap: () {},
+                   onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ResultsScreen(),
+    ),
+  );
+},
                 ),
                 menuCard(
                   icon: Icons.calendar_today,
