@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'home_screen.dart';
 void main() {
   runApp(IESStudentHub());
 }
@@ -45,10 +45,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 40),
 
                 // Logo
-                Image.network(
-                  'https://cms2.ipsacademy.net/images/logoies.png',
-                  height: 100,
-                ),
+                Container(
+  padding: EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(16),
+  ),
+  child: Text(
+    'IES',
+    style: TextStyle(
+      color: Color(0xFF1A237E),
+      fontSize: 40,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
                 SizedBox(height: 16),
 
                 // App Name
@@ -147,7 +158,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: isLoading ? null : () {},
+                          onPressed: isLoading ? null : () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => HomeScreen(
+        computerCode: computerCodeController.text,
+      ),
+    ),
+  );
+},
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF1A237E),
                             shape: RoundedRectangleBorder(
