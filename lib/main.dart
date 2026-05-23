@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
+import 'auth_service.dart';
 void main() {
   runApp(IESStudentHub());
 }
@@ -31,6 +32,44 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   bool isLoading = false;
   bool obscurePassword = true;
+
+  void handleLogin() async {
+  if (computerCodeController.text.isEmpty ||
+      passwordController.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Please enter credentials')),
+    );
+    return;
+  }
+
+  setState(() => isLoading = true);
+
+  final result = await AuthService.login(
+    computerCodeController.text.trim(),
+    passwordController.text.trim(),
+  );
+
+  setState(() => isLoading = false);
+
+  if (result['success']) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(
+          computerCode: computerCodeController.text,
+          studentName: result['student_name'],
+        ),
+      ),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result['message']),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: isLoading ? null : () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => HomeScreen(
-        computerCode: computerCodeController.text,
-      ),
-    ),
-  );
-},
+                          onPressed: isLoading ? null : handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF1A237E),
                             shape: RoundedRectangleBorder(

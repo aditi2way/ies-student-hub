@@ -7,7 +7,11 @@ import 'profile_screen.dart';
 import 'assignment_screen.dart';
 class HomeScreen extends StatelessWidget {
   final String computerCode;
-  const HomeScreen({required this.computerCode});
+  final String studentName;
+  const HomeScreen({
+    required this.computerCode,
+    required this.studentName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +60,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    computerCode,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+  studentName,
+  style: TextStyle(
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+  ),
+),
                   SizedBox(height: 4),
                   Text(
                     'IPS Academy IES',
