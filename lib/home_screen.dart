@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'attendance_screen.dart';
 import 'result_screen.dart';
-
+import 'timetable_screen.dart';
+import 'notice_screen.dart';
+import 'profile_screen.dart';
+import 'assignment_screen.dart';
 class HomeScreen extends StatelessWidget {
   final String computerCode;
   const HomeScreen({required this.computerCode});
@@ -125,28 +128,58 @@ class HomeScreen extends StatelessWidget {
                   title: 'Timetable',
                   subtitle: 'View schedule',
                   color: Colors.orange[700]!,
-                  onTap: () {},
+                onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => TimetableScreen(),
+    ),
+  );
+},
                 ),
                 menuCard(
                   icon: Icons.announcement,
                   title: 'Notices',
                   subtitle: 'College notices',
                   color: Colors.purple[700]!,
-                  onTap: () {},
+                  onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NoticesScreen(),
+    ),
+  );
+},
                 ),
                 menuCard(
                   icon: Icons.assignment,
                   title: 'Assignments',
                   subtitle: 'Your assignments',
                   color: Colors.red[700]!,
-                  onTap: () {},
+                  onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AssignmentScreen(),
+    ),
+  );
+},
                 ),
                 menuCard(
                   icon: Icons.person,
                   title: 'Profile',
                   subtitle: 'Your details',
                   color: Colors.teal[700]!,
-                  onTap: () {},
+                  onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ProfileScreen(
+        computerCode: computerCode,
+      ),
+    ),
+  );
+},
                 ),
               ],
             ),
