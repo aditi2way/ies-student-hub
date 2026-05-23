@@ -70,7 +70,54 @@ class ScraperService {
       print('Results error: $e');
       return [];
     }
+      }
+    static Future<List<Map<String, dynamic>>>
+    fetchMST() async {
+  try {
+    String html = await AuthService.fetchPage(
+      'https://cms2.ipsacademy.net/Student/CombineMST'
+    );
+
+    var document = parser.parse(html);
+    List<Map<String, dynamic>> mstList = [];
+
+    var rows = document.querySelectorAll('table tr');
+    
+    for (var row in rows) {
+      var cells = row.querySelectorAll('td');
+      
+      // Need at least 4 columns
+      // S.No | Subject | MST1 | MST2
+      if (cells.length >= 3) {
+        String subject = cells[1].text.trim();
+        
+        // Skip header row
+        if (subject.isEmpty ||
+            subject == 'Subject Name' ||
+            subject == 'Subject') continue;
+
+        String mst1 = cells.length > 2
+          ? cells[2].text.trim() : '-';
+        String mst2 = cells.length > 3
+          ? cells[3].text.trim() : '-';
+
+        mstList.add({
+          'subject': subject,
+          'mst1': mst1,
+          'mst1_total': '10',
+          'mst2': mst2,
+          'mst2_total': '15',
+        });
+      }
+    }
+    return mstList;
+
+  } catch (e) {
+    print('MST error: $e');
+    return [];
   }
+}
+  
 
   // Fetch Student Name
   static Future<String> fetchStudentName() async {

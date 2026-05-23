@@ -115,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 menuCard(
                   icon: Icons.grade,
-                  title: 'Results',
+                  title: 'Results & MST',
                   subtitle: 'Check your marks',
                   color: Colors.green[700]!,
                    onTap: () {
