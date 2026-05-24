@@ -14,33 +14,33 @@ class AuthService {
 
   // Login to college portal
   static Future<Map<String, dynamic>> login(
-      String computerCode, String password) async {
+    String computerCode,
+    String password,
+  ) async {
     try {
-
       // Step 1: Get login page to get captcha
       final getResponse = await http.get(
         Uri.parse('$baseUrl/Login/sign_in'),
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Connection': 'keep-alive',
         },
       );
 
       // Get initial cookie
-      String initialCookie = extractCookie(
-        getResponse.headers['set-cookie']);
+      String initialCookie = extractCookie(getResponse.headers['set-cookie']);
       print('Initial cookie: $initialCookie');
 
       // Get captcha from login page
       String loginPageHtml = getResponse.body;
       String captchaValue = '';
       var loginDoc = parser.parse(loginPageHtml);
-      var captchaEl = loginDoc
-        .querySelector('input[name="captcha"]');
+      var captchaEl = loginDoc.querySelector('input[name="captcha"]');
       if (captchaEl != null) {
-        captchaValue = 
-          captchaEl.attributes['value'] ?? '';
+        captchaValue = captchaEl.attributes['value'] ?? '';
       }
       print('Captcha: $captchaValue');
 
@@ -48,10 +48,11 @@ class AuthService {
       final loginResponse = await http.post(
         Uri.parse('$baseUrl/Login/check'),
         headers: {
-          'Content-Type': 
-            'application/x-www-form-urlencoded',
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Referer': '$baseUrl/Login/sign_in',
           'Cookie': initialCookie,
           'Connection': 'keep-alive',
@@ -67,8 +68,7 @@ class AuthService {
       print('Login status: ${loginResponse.statusCode}');
 
       // Get session cookie after login
-      String sessionCookie = extractCookie(
-        loginResponse.headers['set-cookie']);
+      String sessionCookie = extractCookie(loginResponse.headers['set-cookie']);
       if (sessionCookie.isEmpty) {
         sessionCookie = initialCookie;
       }
@@ -79,8 +79,10 @@ class AuthService {
         Uri.parse('$baseUrl/Student'),
         headers: {
           'Cookie': sessionCookie,
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Referer': '$baseUrl/Login/sign_in',
           'Connection': 'keep-alive',
           'Upgrade-Insecure-Requests': '1',
@@ -89,7 +91,9 @@ class AuthService {
 
       String dashBody = dashResponse.body;
       print('Dash length: ${dashBody.length}');
-      print('Dash preview: ${dashBody.substring(0, dashBody.length < 300 ? dashBody.length : 300)}');
+      print(
+        'Dash preview: ${dashBody.substring(0, dashBody.length < 300 ? dashBody.length : 300)}',
+      );
 
       // Check if login successful
       if (!dashBody.contains('Attendance') &&
@@ -105,9 +109,9 @@ class AuthService {
       String studentName = computerCode;
       var document = parser.parse(dashBody);
       var nameEl =
-        document.querySelector('b') ??
-        document.querySelector('strong') ??
-        document.querySelector('h4');
+          document.querySelector('b') ??
+          document.querySelector('strong') ??
+          document.querySelector('h4');
 
       if (nameEl != null &&
           nameEl.text.trim().isNotEmpty &&
@@ -127,13 +131,9 @@ class AuthService {
         'student_name': studentName,
         'cookie': sessionCookie,
       };
-
     } catch (e) {
       print('Login error: $e');
-      return {
-        'success': false,
-        'message': 'Network error: $e',
-      };
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 
@@ -141,15 +141,16 @@ class AuthService {
   static Future<String> fetchPage(String url) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      String cookie = 
-        prefs.getString('session_cookie') ?? '';
+      String cookie = prefs.getString('session_cookie') ?? '';
 
       final response = await http.get(
         Uri.parse(url),
         headers: {
           'Cookie': cookie,
-          'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
           'Cache-Control': 'max-age=0',
           'Connection': 'keep-alive',
@@ -187,5 +188,38 @@ class AuthService {
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+  }
+
+  static Future<bool> changeSession(String sessionValue) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String cookie = prefs.getString('session_cookie') ?? '';
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/Login/student_change_session'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': cookie,
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36',
+          'Referer': '$baseUrl/Student',
+        },
+        body: {'session': sessionValue, 'page': '/Student'},
+      );
+
+      String newCookie = extractCookie(response.headers['set-cookie']);
+      if (newCookie.isNotEmpty) {
+        await prefs.setString('session_cookie', newCookie);
+      }
+      await prefs.setString('current_session', sessionValue);
+      return true;
+    } catch (e) {
+      print('Session error: $e');
+      return false;
+    }
+  }
+
+  static Future<String> getCurrentSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('current_session') ?? '1';
   }
 }

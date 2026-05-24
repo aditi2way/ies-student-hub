@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'scraper_service.dart';
+import 'auth_service.dart';
 
 class AttendanceScreen extends StatefulWidget {
   @override
@@ -12,6 +13,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   String message = '';
   bool isLoading = true;
   String error = '';
+  String selectedSession = '30';
+bool sessionChanging = false;
+final Map<String, String> sessions = {
+  '30': '2025-2026 (Jan-June)',
+  '29': '2025-2026 (July-Dec)',
+  '28': '2024-2025 (Jan-June)',
+  '27': '2024-2025 (July-Dec)',
+};
 
   @override
   void initState() {
@@ -60,11 +69,77 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: Colors.white),
-            onPressed: loadAttendance,
-          )
-        ],
+  IconButton(
+    icon: Icon(Icons.refresh, color: Colors.white),
+    onPressed: loadAttendance,
+  )
+],
+bottom: PreferredSize(
+  preferredSize: Size.fromHeight(50),
+  child: Container(
+    margin: EdgeInsets.symmetric(
+      horizontal: 16, vertical: 8),
+    padding: EdgeInsets.symmetric(horizontal: 12),
+    decoration: BoxDecoration(
+      color: Colors.white24,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: sessionChanging
+      ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 16, height: 16,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2)),
+            SizedBox(width: 8),
+            Text('Changing session...',
+              style: TextStyle(color: Colors.white)),
+          ],
+        )
+      : DropdownButton<String>(
+          value: selectedSession,
+          dropdownColor: Color(0xFF1A237E),
+          icon: Icon(Icons.arrow_drop_down,
+            color: Colors.white),
+          underline: SizedBox(),
+          isExpanded: true,
+          items: sessions.entries.map((entry) {
+            return DropdownMenuItem(
+              value: entry.key,
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today,
+                    color: Colors.white70,
+                    size: 14),
+                  SizedBox(width: 8),
+                  Text(entry.value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13)),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: (value) async {
+            if (value != null &&
+                value != selectedSession) {
+              setState(() {
+                sessionChanging = true;
+                selectedSession = value;
+                isLoading = true;
+              });
+              await AuthService.changeSession(value);
+              loadAttendance();
+              setState(() {
+                sessionChanging = false;
+              });
+            }
+          },
+        ),
+  ),
+),
       ),
       body: isLoading
         ? Center(
