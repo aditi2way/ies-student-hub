@@ -166,4 +166,80 @@ class ScraperService {
       return [];
     }
   }
+  static Future<Map<String, dynamic>> 
+    fetchProfile() async {
+  try {
+    String html = await AuthService.fetchPage(
+      'https://cms2.ipsacademy.net/StudentND/IdentityCard'
+    );
+
+    var document = parser.parse(html);
+    Map<String, dynamic> profile = {};
+
+    // Get all text from page
+    String fullText = document.body?.text ?? '';
+    print('Profile text: $fullText');
+
+    // Extract each field
+    // Name
+    RegExp nameReg = RegExp(r'Name\s*:\s*([^\n]+)');
+    Match? nameMatch = nameReg.firstMatch(fullText);
+    profile['name'] = nameMatch?.group(1)?.trim() ?? '';
+
+    // Enrollment
+    RegExp enrollReg = RegExp(r'Enrollment\s*:\s*([^\n]+)');
+    Match? enrollMatch = enrollReg.firstMatch(fullText);
+    profile['enrollment'] = 
+      enrollMatch?.group(1)?.trim() ?? '';
+
+    // Course
+    RegExp courseReg = RegExp(r'Course\s*:\s*([^\n]+)');
+    Match? courseMatch = courseReg.firstMatch(fullText);
+    profile['course'] = courseMatch?.group(1)?.trim() ?? '';
+
+    // Session
+    RegExp sessionReg = RegExp(r'Session\s*:\s*([^\n]+)');
+    Match? sessionMatch = sessionReg.firstMatch(fullText);
+    profile['session'] = 
+      sessionMatch?.group(1)?.trim() ?? '';
+
+    // Phone
+    RegExp phoneReg = RegExp(r'Phone\s*:\s*([^\n]+)');
+    Match? phoneMatch = phoneReg.firstMatch(fullText);
+    profile['phone'] = phoneMatch?.group(1)?.trim() ?? '';
+
+    // Blood Group
+    RegExp bloodReg = RegExp(r'Blood group\s*:\s*([^\n]+)');
+    Match? bloodMatch = bloodReg.firstMatch(fullText);
+    profile['blood_group'] = 
+      bloodMatch?.group(1)?.trim() ?? '';
+
+    // Computer Code
+    RegExp codeReg = RegExp(r'Computer Code\s*:\s*([^\n]+)');
+    Match? codeMatch = codeReg.firstMatch(fullText);
+    profile['computer_code'] = 
+      codeMatch?.group(1)?.trim() ?? '';
+
+    // Photo URL
+    var imgs = document.querySelectorAll('img');
+for (var img in imgs) {
+  String src = img.attributes['src'] ?? '';
+  // Student photos are in Student_Photograph folder
+  if (src.contains('Student_Photograph') ||
+      src.contains('uploads')) {
+    profile['photo'] = src.startsWith('http')
+      ? src
+      : 'https://cms2.ipsacademy.net/$src';
+    print('Photo found: ${profile['photo']}');
+    break;
+  }
+}
+
+    return profile;
+
+  } catch (e) {
+    print('Profile error: $e');
+    return {};
+  }
+}
 }
