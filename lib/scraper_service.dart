@@ -117,7 +117,107 @@ class ScraperService {
     return [];
   }
 }
-  
+      static Future<List<Map<String, dynamic>>>
+    fetchCollegeNotices() async {
+  try {
+    String html = await AuthService.fetchPage(
+      'https://ies.ipsacademy.org/'
+    );
+
+    var document = parser.parse(html);
+    List<Map<String, dynamic>> notices = [];
+
+    // Get notice board items
+    var noticeItems = document
+      .querySelectorAll('.category-notice-board a, ul li a');
+
+    for (var item in noticeItems) {
+      String title = item.text.trim();
+      String link = item.attributes['href'] ?? '';
+
+      if (title.isNotEmpty && link.isNotEmpty &&
+          link.contains('ipsacademy')) {
+        notices.add({
+          'title': title,
+          'link': link,
+          'date': '',
+          'type': 'Notice',
+        });
+      }
+    }
+    return notices;
+
+  } catch (e) {
+    print('Notice error: $e');
+    return [];
+  }
+}
+
+static Future<List<Map<String, dynamic>>>
+    fetchCollegeEvents() async {
+  try {
+    String html = await AuthService.fetchPage(
+      'https://ies.ipsacademy.org/'
+    );
+
+    var document = parser.parse(html);
+    List<Map<String, dynamic>> events = [];
+
+    var eventItems = document
+      .querySelectorAll('.category-upcoming a');
+
+    for (var item in eventItems) {
+      String title = item.text.trim();
+      String link = item.attributes['href'] ?? '';
+
+      if (title.isNotEmpty) {
+        events.add({
+          'title': title,
+          'link': link,
+          'type': 'Event',
+        });
+      }
+    }
+    return events;
+
+  } catch (e) {
+    print('Events error: $e');
+    return [];
+  }
+}
+
+static Future<List<Map<String, dynamic>>>
+    fetchCollegeNews() async {
+  try {
+    String html = await AuthService.fetchPage(
+      'https://ies.ipsacademy.org/'
+    );
+
+    var document = parser.parse(html);
+    List<Map<String, dynamic>> news = [];
+
+    var newsItems = document
+      .querySelectorAll('.category-recent a');
+
+    for (var item in newsItems) {
+      String title = item.text.trim();
+      String link = item.attributes['href'] ?? '';
+
+      if (title.isNotEmpty) {
+        news.add({
+          'title': title,
+          'link': link,
+          'type': 'News',
+        });
+      }
+    }
+    return news;
+
+  } catch (e) {
+    print('News error: $e');
+    return [];
+  }
+}
 
   // Fetch Student Name
   static Future<String> fetchStudentName() async {

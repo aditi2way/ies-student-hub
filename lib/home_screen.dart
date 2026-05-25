@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'attendance_screen.dart';
 import 'result_screen.dart';
 import 'timetable_screen.dart';
-import 'notice_screen.dart';
 import 'profile_screen.dart';
 import 'assignment_screen.dart';
+import 'courses_screen.dart';
+import 'tools_hub_screen.dart';
+
 class HomeScreen extends StatelessWidget {
   final String computerCode;
   final String studentName;
-  const HomeScreen({
-    required this.computerCode,
-    required this.studentName,
-  });
+  const HomeScreen({required this.computerCode, required this.studentName});
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +18,14 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
         backgroundColor: Color(0xFF1A237E),
-        title: Text(
-          'IES Student Hub',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('IES Student Hub', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: Colors.white),
             onPressed: () {
               Navigator.pop(context);
             },
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -37,7 +33,6 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Welcome Card
             Container(
               width: double.infinity,
@@ -53,27 +48,21 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Welcome Back! 👋',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    studentName,
                     style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
-  studentName,
-  style: TextStyle(
-    color: Colors.white,
-    fontSize: 22,
-    fontWeight: FontWeight.bold,
-  ),
-),
-                  SizedBox(height: 4),
-                  Text(
                     'IPS Academy IES',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ],
               ),
@@ -105,55 +94,39 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'View your attendance',
                   color: Colors.blue[700]!,
                   onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => AttendanceScreen(),
-    ),
-  );
-},
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AttendanceScreen(),
+                      ),
+                    );
+                  },
                 ),
                 menuCard(
                   icon: Icons.grade,
                   title: 'Results & MST',
                   subtitle: 'Check your marks',
                   color: Colors.green[700]!,
-                   onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ResultsScreen(),
-    ),
-  );
-},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ResultsScreen()),
+                    );
+                  },
                 ),
                 menuCard(
                   icon: Icons.calendar_today,
                   title: 'Timetable',
                   subtitle: 'View schedule',
                   color: Colors.orange[700]!,
-                onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => TimetableScreen(),
-    ),
-  );
-},
-                ),
-                menuCard(
-                  icon: Icons.announcement,
-                  title: 'Notices',
-                  subtitle: 'College notices',
-                  color: Colors.purple[700]!,
                   onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => NoticesScreen(),
-    ),
-  );
-},
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TimetableScreen(),
+                      ),
+                    );
+                  },
                 ),
                 menuCard(
                   icon: Icons.assignment,
@@ -161,13 +134,13 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Your assignments',
                   color: Colors.red[700]!,
                   onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => AssignmentScreen(),
-    ),
-  );
-},
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AssignmentScreen(),
+                      ),
+                    );
+                  },
                 ),
                 menuCard(
                   icon: Icons.person,
@@ -175,16 +148,42 @@ class HomeScreen extends StatelessWidget {
                   subtitle: 'Your details',
                   color: Colors.teal[700]!,
                   onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ProfileScreen(
-        computerCode: computerCode,
-      ),
-    ),
-  );
-},
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileScreen(computerCode: computerCode),
+                      ),
+                    );
+                  },
                 ),
+
+                menuCard(
+                  icon: Icons.book,
+                  title: 'Courses',
+                  subtitle: 'View Syllabus',
+                  color: Colors.indigo[700]!,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CoursesScreen()),
+                    );
+                  },
+                ),
+                menuCard(
+  icon: Icons.calculate,
+  title: 'Calculators',
+  subtitle: 'SGPA, CGPA & Goal',
+  color: Colors.purple[700]!,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ToolsHubScreen(),
+      ),
+    );
+  },
+),
               ],
             ),
           ],
@@ -238,10 +237,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 11, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],
